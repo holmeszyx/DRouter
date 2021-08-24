@@ -314,9 +314,11 @@ class RemoteStream {
         static Map<IRemoteCallback, IClientService> callbackPool =
                 Collections.synchronizedMap(new WeakHashMap<IRemoteCallback, IClientService>());
 
+        int type;
         IBinder binder;
 
         RemoteCallbackParcelable(Object object) {
+            type = type(object);
             final IRemoteCallback callback = (IRemoteCallback) object;
             IClientService callbackBinder = callbackPool.get(callback);
             if (callbackBinder == null) {
@@ -340,11 +342,13 @@ class RemoteStream {
 
         RemoteCallbackParcelable(Parcel in) {
             binder = in.readStrongBinder();
+            type = in.readInt();
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeStrongBinder(binder);
+            dest.writeInt(type);
         }
 
         Object getObject() {
@@ -354,7 +358,7 @@ class RemoteStream {
                 }
             }
             final IClientService callbackService = IClientService.Stub.asInterface(binder);
-            IRemoteCallback callback = new IRemoteCallback() {
+            IRemoteCallback callback = create(type, new IRemoteCallback() {
                 @Override
                 public void callback(Object... data) throws RemoteException {
                     if (data == null) {
@@ -370,9 +374,85 @@ class RemoteStream {
                         throw e;
                     }
                 }
-            };
+            });
             callbackPool.put(callback, callbackService);
             return callback;
+        }
+
+        private static int type(Object object) {
+            if (object instanceof IRemoteCallback.Type) {
+                return 0;
+            }
+            if (object instanceof IRemoteCallback.Type1) {
+                return 1;
+            }
+            if (object instanceof IRemoteCallback.Type2) {
+                return 2;
+            }
+            if (object instanceof IRemoteCallback.Type3) {
+                return 3;
+            }
+            if (object instanceof IRemoteCallback.Type4) {
+                return 4;
+            }
+            if (object instanceof IRemoteCallback.Type5) {
+                return 5;
+            }
+            throw new IllegalArgumentException(
+                    String.format("object %s is not RemoteCallback type", object));
+        }
+
+        private static IRemoteCallback create(int type, final IRemoteCallback callback) {
+            if (type == 0) {
+                return new IRemoteCallback.Type() {
+                    @Override
+                    public void callback() throws RemoteException {
+                        callback.callback();
+                    }
+                };
+            }
+            if (type == 1) {
+                return new IRemoteCallback.Type1() {
+                    @Override
+                    public void callback(Object p1) throws RemoteException {
+                        callback.callback(p1);
+                    }
+                };
+            }
+            if (type == 2) {
+                return new IRemoteCallback.Type2() {
+                    @Override
+                    public void callback(Object p1, Object p2) throws RemoteException {
+                        callback.callback(p1, p2);
+                    }
+                };
+            }
+            if (type == 3) {
+                return new IRemoteCallback.Type3() {
+                    @Override
+                    public void callback(Object p1, Object p2, Object p3) throws RemoteException {
+                        callback.callback(p1, p2, p3);
+                    }
+                };
+            }
+            if (type == 4) {
+                return new IRemoteCallback.Type4() {
+                    @Override
+                    public void callback(Object p1, Object p2, Object p3, Object p4) throws RemoteException {
+                        callback.callback(p1, p2, p3, p4);
+                    }
+                };
+            }
+            if (type == 5) {
+                return new IRemoteCallback.Type5() {
+                    @Override
+                    public void callback(Object p1, Object p2, Object p3, Object p4, Object p5) throws RemoteException {
+                        callback.callback(p1, p2, p3, p4, p5);
+                    }
+                };
+            }
+            throw new IllegalArgumentException(
+                    String.format("object %s is not RemoteCallback type"));
         }
 
         public static final Creator<RemoteCallbackParcelable> CREATOR = new Creator<RemoteCallbackParcelable>() {

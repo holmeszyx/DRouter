@@ -53,7 +53,7 @@ public class RemoteFunction implements IRemoteFunction {
 
     @Override
     @Remote
-    public ResultObject handle(ParamObject[] x, ParamObject y, Integer z, Context context, final IRemoteCallback callback) {
+    public ResultObject handle(ParamObject[] x, ParamObject y, Integer z, Context context, final IRemoteCallback.Type2<String, Integer> callback) {
 
         RouterExecutor.main(new Runnable() {
             @Override
@@ -61,7 +61,7 @@ public class RemoteFunction implements IRemoteFunction {
                 RouterLogger.toast("主进程RemoteFunction执行成功");
             }
         });
-        RouterLogger.getAppLogger().d("RemoteFunction handle: TestBean[] x, String y=%s, int z=%s, %s", y, z, callback);
+        RouterLogger.getAppLogger().d("Remot  eF unction handle: TestBean[] x, String y=%s, int z=%s, %s", y, z, callback);
         final ResultObject result = new ResultObject();
         result.a = 100;
         result.i = "100";
@@ -130,7 +130,6 @@ public class RemoteFunction implements IRemoteFunction {
         }, 2000);
     }
 
-    @Override
     @Remote
     public void call() {
     }

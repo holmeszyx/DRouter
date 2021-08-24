@@ -78,8 +78,17 @@ public class Extend {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({Thread.POSTING, Thread.MAIN, Thread.WORKER})
     public @interface Thread {
+        /**
+         * No thread switch
+         */
         int POSTING     = 0;
+        /**
+         * UI thread
+         */
         int MAIN        = 1;
+        /**
+         * Worker thread
+         */
         int WORKER      = 2;
     }
 

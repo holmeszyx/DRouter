@@ -2,8 +2,9 @@ package com.didi.drouter.remote;
 
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.didi.drouter.api.DRouter;
 import com.didi.drouter.api.Extend;
@@ -11,7 +12,6 @@ import com.didi.drouter.api.RouterLifecycle;
 import com.didi.drouter.module_base.ParamObject;
 import com.didi.drouter.module_base.remote.IRemoteFunction;
 import com.didi.drouter.module_base.remote.RemoteFeature;
-import com.didi.drouter.utils.RouterLogger;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,10 +46,15 @@ public class MainActivity extends AppCompatActivity {
         if (view.getId() == R.id.service) {
             bindRemote();
             remoteFunction.handle(new ParamObject[]{}, new ParamObject(), 2, this,
-                    new IRemoteCallback() {
+                    new RemoteCallback2<String, Integer>() {
                         @Override
-                        public void callback(Object... data) throws RemoteException {
-                            RouterLogger.toast("子进程收到主进程的回调");
+                        public void callback(String s, Integer integer) throws RemoteException {
+
+                        }
+
+                        @Override
+                        public int mode() {
+                            return BINDER;
                         }
                     });
         }
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (view.getId() == R.id.awake_main) {
             bindRemote();
-            remoteFunction.call();
+//            remoteFunction.call();
         }
     }
 
