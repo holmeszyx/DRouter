@@ -1,6 +1,7 @@
 package com.didi.drouter.generator;
 
 import com.didi.drouter.plugin.RouterSetting;
+import com.didi.drouter.utils.Logger;
 import com.didi.drouter.utils.StoreUtil;
 import com.didi.drouter.utils.TextUtil;
 
@@ -85,6 +86,8 @@ abstract class AbsRouterCollect {
 
     void generatorClass(File routerDir, CtClass ctClass, String... methods) throws Exception {
         for (String method : methods) {
+            Logger.d("\ngen class: " + ctClass.getName() + "\n" + "m:\n" + method);
+
             CtMethod ctMethod = CtNewMethod.make(method, ctClass);
 
             MethodInfo methodInfo = ctMethod.getMethodInfo();
