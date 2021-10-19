@@ -15,7 +15,7 @@ public class OutClass {
     public static class InnerInterceptor implements IRouterInterceptor {
         @Override
         public void handle(@NonNull Request request) {
-            request.getInterceptor().onContinue();
+            request.getInterceptor().onInterrupt();
         }
 
     }

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.didi.drouter.api.DRouter;
 import com.didi.drouter.api.Extend;
@@ -42,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.start_activity1:
                 DRouter.build("/activity/Test1_Value1_Value2?Arg3=Value3")
                         .putExtra("Arg4", "Value4")
-                        .start(this);
+                        .start(this, new RouterCallback() {
+                            @Override
+                            public void onResult(@NonNull Result result) {
+                                if (!result.isActivityStarted()) {
+                                    RouterLogger.toast("打开失败1");
+                                }
+                            }
+                        });
                 break;
 
             case R.id.start_activity2:
@@ -115,11 +123,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.start_fragment1:
-                DRouter.build("/fragment/first/1").start(this, new RouterCallback() {
+//                DRouter.build("/fragment/first/1").start(this, new RouterCallback() {
+//                    @Override
+//                    public void onResult(@NonNull Result result) {
+//                        if (result.getFragment() != null) {
+//                            Toast.makeText(DRouter.getContext(), "获取FirstFragment成功", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+
+                DRouter.build("/fragment/second/").start(this, new RouterCallback() {
                     @Override
                     public void onResult(@NonNull Result result) {
-                        if (result.getFragment() != null) {
-                            Toast.makeText(DRouter.getContext(), "获取FirstFragment成功", Toast.LENGTH_SHORT).show();
+                        Fragment fragment = result.getFragment();
+                        if (fragment != null) {
+                            Toast.makeText(DRouter.getContext(), "获取FirstFragment成功:" + fragment.getClass().getName(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
